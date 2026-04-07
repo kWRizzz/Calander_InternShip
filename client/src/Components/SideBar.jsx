@@ -5,10 +5,9 @@ const SideBar = () => {
     const [note, setNote] = useState("")
     const [notes, setNotes] = useState([])
 
-    const inputNotes = (e) => {
-        if (note.trim() === "") return
-        setNotes([...notes, note])
-        setNote("")
+    const handleDelete = (indexToDelete) => {
+        const Update= notes.filter((_,index)=>index!==indexToDelete)
+        setNotes(Update)
     }
 
     const handleSubmit = (e) => {
@@ -63,9 +62,23 @@ const SideBar = () => {
                 {/* Notes List */}
                 <div className='flex-1 overflow-y-auto'>
                     {notes.map((n, index) => (
-                        <p key={index} className='text-sm mb-2 border-b pb-1'>
-                            • {n}
-                        </p>
+                        <div
+                        className='flex justify-between items-center mb-2 '
+                            key={index}
+                        >
+                            <p
+                                className='text-sm mb-2 border-b pb-1'>
+                                • {n}
+                            </p>
+
+                            <button
+                            onClick={()=>handleDelete(index)}
+                                className=' bg-red-600 text-xs rounded-lg px-2 py-1'
+                            >
+                                Delete
+                            </button>
+                        </div>
+
                     ))}
                 </div>
 
