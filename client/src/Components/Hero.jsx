@@ -45,7 +45,7 @@ const Hero = ({ selectedDate, theme }) => {
     <div className="relative w-full h-[140px] md:h-[180px] overflow-hidden rounded-2xl">
 
       <img
-        src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
+        src="https://tse1.mm.bing.net/th/id/OIP.xD9VE0nw3tIq-HOrME9ybwHaEK?rs=1&pid=ImgDetMain&o=7&rm=3"
         className="w-full h-full object-cover scale-110"
       />
 
