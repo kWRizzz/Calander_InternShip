@@ -1,8 +1,9 @@
+
 import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { WiDaySunny, WiRain, WiCloudy } from 'react-icons/wi'
 
-const Hero = ({ selectedDate }) => {
+const Hero = ({ selectedDate, theme }) => {
 
   const [weather, setWeather] = useState(null)
 
@@ -36,17 +37,21 @@ const Hero = ({ selectedDate }) => {
     return <WiRain size={40} />
   }
 
+  const overlay = theme === "dark"
+    ? "bg-black/70"
+    : "bg-gradient-to-b from-black/50 to-purple-900/50"
+
   return (
-    <div className="relative w-full h-[160px] md:h-[180px] overflow-hidden rounded-2xl">
+    <div className="relative w-full h-[140px] md:h-[180px] overflow-hidden rounded-2xl">
 
       <img
         src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85"
         className="w-full h-full object-cover scale-110"
       />
 
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-[3px]" />
+      <div className={`absolute inset-0 ${overlay} backdrop-blur-[3px]`} />
 
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 text-white">
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
 
         <motion.p
           key={selectedDate}
@@ -60,7 +65,7 @@ const Hero = ({ selectedDate }) => {
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-xl md:text-3xl font-medium mt-2"
+          className="text-lg md:text-3xl font-medium mt-2"
         >
           Slow Living Perspective
         </motion.h1>
@@ -70,7 +75,7 @@ const Hero = ({ selectedDate }) => {
             key={weather.temp}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center gap-2 mt-3 text-sm"
+            className="flex items-center gap-2 mt-2 md:mt-3 text-sm"
           >
             {getWeatherIcon(weather.code)}
             <span>{weather.temp}°C</span>

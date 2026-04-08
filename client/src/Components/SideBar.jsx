@@ -1,59 +1,78 @@
+
+
 import React, { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FiEdit, FiTrash2, FiSave } from 'react-icons/fi'
 
-const SideBar = () => {
+const SideBar = ({ selectedDate, notesByDate, setNotesByDate, theme }) => {
 
     const [note, setNote] = useState("")
-    const [notes, setNotes] = useState([])
     const [editIndex, setEditIndex] = useState(null)
     const [editText, setEditText] = useState("")
 
-    const handleDelete = (i) => {
-        setNotes(notes.filter((_, index) => index !== i))
-    }
+    const dateKey = selectedDate.toISOString().split("T")[0]
+    const notes = notesByDate[dateKey] || []
 
     const handleSubmit = (e) => {
         e.preventDefault()
         if (!note.trim()) return
-        setNotes([...notes, note])
+
+        setNotesByDate({
+            ...notesByDate,
+            [dateKey]: [...notes, note]
+        })
+
         setNote("")
+    }
+
+    const handleDelete = (i) => {
+        const updatedNotes = notes.filter((_, index) => index !== i)
+
+        setNotesByDate({
+            ...notesByDate,
+            [dateKey]: updatedNotes
+        })
     }
 
     const handleSave = () => {
         const updated = [...notes]
         updated[editIndex] = editText
-        setNotes(updated)
+
+        setNotesByDate({
+            ...notesByDate,
+            [dateKey]: updated
+        })
+
         setEditIndex(null)
     }
 
+    const cardTheme = theme === "dark"
+      ? "bg-[#0f172a] border-gray-700"
+      : "bg-black/30 border-white/20 backdrop-blur-md"
+
     return (
-        <div className='flex flex-col h-full p-5 bg-[#020617]'>
+        <div className='flex flex-col h-full p-4 md:p-5'>
 
-            {/* Title */}
-            <h1 className='text-xl font-semibold text-gray-200 mb-4 tracking-wide'>
-                Notes
-            </h1>
+            <h1 className='text-lg md:text-xl font-semibold mb-2'>Notes</h1>
 
-            {/* Input */}
+            <p className='text-xs text-gray-400 mb-4'>
+                {selectedDate.toDateString()}
+            </p>
+
             <form onSubmit={handleSubmit} className='mb-4'>
                 <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     placeholder='Write something...'
-                    className='w-full p-3 rounded-xl bg-[#0f172a] border border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                    className={`w-full p-2 md:p-3 rounded-xl text-sm ${cardTheme}`}
                 />
 
-                <button
-                    type='submit'
-                    className='mt-3 w-full bg-indigo-600 hover:bg-indigo-700 py-2 rounded-xl transition'
-                >
+                <button className='mt-2 w-full bg-purple-500 py-2 rounded-xl'>
                     Add Note
                 </button>
             </form>
 
-            {/* Notes */}
-            <div className='flex-1 overflow-y-auto space-y-3'>
+            <div className='flex-1 overflow-y-auto space-y-2 md:space-y-3'>
 
                 <AnimatePresence>
                     {notes.map((n, index) => (
@@ -62,34 +81,27 @@ const SideBar = () => {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, x: 50 }}
-                            className='bg-[#0f172a] border border-gray-700 p-3 rounded-xl flex justify-between items-center'
+                            className={`${cardTheme} p-3 rounded-xl flex justify-between items-center`}
                         >
 
                             {editIndex === index ? (
                                 <input
                                     value={editText}
                                     onChange={(e) => setEditText(e.target.value)}
-                                    className='bg-transparent border-b border-gray-500 text-sm w-full mr-2 focus:outline-none'
+                                    className='bg-transparent border-b w-full mr-2'
                                 />
                             ) : (
-                                <p className='text-sm text-gray-300'>
-                                    {n}
-                                </p>
+                                <p className='text-xs md:text-sm'>{n}</p>
                             )}
 
-                            <div className='flex gap-2 ml-2'>
-
+                            <div className='flex gap-2'>
                                 {editIndex === index ? (
-                                    <button onClick={handleSave}>
-                                        <FiSave />
-                                    </button>
+                                    <button onClick={handleSave}><FiSave /></button>
                                 ) : (
-                                    <button
-                                        onClick={() => {
-                                            setEditIndex(index)
-                                            setEditText(n)
-                                        }}
-                                    >
+                                    <button onClick={() => {
+                                        setEditIndex(index)
+                                        setEditText(n)
+                                    }}>
                                         <FiEdit />
                                     </button>
                                 )}
@@ -97,7 +109,6 @@ const SideBar = () => {
                                 <button onClick={() => handleDelete(index)}>
                                     <FiTrash2 />
                                 </button>
-
                             </div>
 
                         </motion.div>
